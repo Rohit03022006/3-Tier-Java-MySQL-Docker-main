@@ -18,12 +18,34 @@ spec:
           image: mysql:8.0
           ports:
             - containerPort: 3306
+
           envFrom:
             - secretRef:
                 name: mysql-secret
+
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -h 127.0.0.1 -uroot -proot"
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -h 127.0.0.1 -uroot -proot"
+            initialDelaySeconds: 30
+            periodSeconds: 15
+
       volumes:
         - name: mysql-data
           persistentVolumeClaim:

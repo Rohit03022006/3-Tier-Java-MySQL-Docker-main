@@ -1,10 +1,17 @@
-kubectl apply -f 0-namespace.yaml
-kubectl apply -f 1-mysql-secret.yaml
-kubectl apply -f 2-mysql-configmap.yaml
-kubectl apply -f 3-mysql-deployment.yaml
-kubectl apply -f 4-mysql-service.yaml
-kubectl apply -f 5-app-configmap.yaml
-kubectl apply -f 6-app-deployment.yaml
-kubectl apply -f 7-app-service.yaml
-kubectl apply -f 8-ingress.yaml
-kubectl apply -f 9-hpa.yaml
+sudo kubectl apply -f 0-namespace.yaml
+sudo kubectl apply -f 1-mysql-secret.yaml
+sudo kubectl apply -f 2-mysql-configmap.yaml
+sudo kubectl apply -f 3-mysql-deployment.yaml
+sudo kubectl apply -f 4-mysql-service.yaml
+sudo kubectl apply -f 5-app-configmap.yaml
+sudo kubectl apply -f 6-app-deployment.yaml
+sudo kubectl apply -f 7-app-service.yaml
+sudo kubectl apply -f 8-ingress.yaml
+sudo kubectl apply -f 9-hpa.yaml
+
+or
+
+sudo kubectl apply -f .
+
+sudo kubectl get all .
+

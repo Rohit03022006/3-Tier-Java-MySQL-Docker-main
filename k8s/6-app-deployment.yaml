@@ -17,44 +17,23 @@ spec:
         - name: bankapp
           image: rohitxten/3-tier-bankapp:latest
           ports:
-            - containerPort: 8081
+            - containerPort: 8080 
           env:
-            - name: DB_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: DB_HOST
-            - name: DB_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: app-config
-                  key: DB_NAME
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-secret
-                  key: MYSQL_USER
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-secret
-                  key: MYSQL_PASSWORD
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/bankdb
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: root
           livenessProbe:
             httpGet:
-              path: /
-              port: 8081
-            initialDelaySeconds: 30
+              path: /actuator/health/liveness
+              port: 8080   
+            initialDelaySeconds: 100
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /
-              port: 8081
-            initialDelaySeconds: 10
+              path: /actuator/health/liveness
+              port: 8080  
+            initialDelaySeconds: 80
             periodSeconds: 5
