@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Login - GoldKitty Bank</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-hover: #F9E076;
+            --dark-bg: #0f0f0f;
+            --glass-white: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            /* Subtle radial glow to give depth without being distracting */
+            background-image:
+                radial-gradient(circle at 50% -20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 120%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            color: #ffffff;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Navbar Refinement */
+        .navbar-custom {
+            background-color: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--gold-primary) !important;
+            text-transform: uppercase;
+        }
+
+        .social-icons a {
+            color: rgba(255, 255, 255, 0.6);
+            margin-left: 20px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--gold-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Login Card */
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: var(--glass-white);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-card h2 {
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        /* Form Styling */
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            color: #ffffff;
+            height: 50px;
+            border-radius: 12px;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+            color: #ffffff;
+        }
+
+        .btn-login {
+            background-color: var(--gold-primary);
+            color: #000;
+            font-weight: 600;
+            height: 50px;
+            border-radius: 12px;
+            border: none;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background-color: var(--gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .custom-link {
+            color: var(--gold-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .custom-link:hover {
+            color: var(--gold-hover);
+            text-decoration: underline;
+        }
+
+        .alert-danger {
+            background: rgba(255, 76, 76, 0.1);
+            border: 1px solid rgba(255, 76, 76, 0.3);
+            color: #ff6b6b;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/landing">GoldKitty Bank</a>
+            <div class="ml-auto social-icons">
+                <a href="https://www.youtube.com/@codewithGoldKitty" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.linkedin.com/in/code-with-goldecat-453460297/" target="_blank"><i
+                        class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="login-card">
+        <h2 class="text-center">Secure Sign In</h2>
+        <form method="post" action="/login">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" name="username" placeholder="Enter your username" required />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" placeholder="••••••••" required />
+            </div>
+            <button type="submit" class="btn btn-block btn-login">Access Dashboard</button>
+        </form>
+
+        <p class="text-center mt-4 mb-0" style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+            New to GoldKitty? <a href="/register" class="custom-link">Create Account</a>
+        </p>
+
+        <div th:if="${param.error}" class="alert alert-danger mt-3 text-center">
+            Invalid credentials. Please try again.
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 GoldKitty International. <a href="#" class="custom-link"
+                style="font-weight: 400; opacity: 0.8;">Privacy</a> | <a href="#" class="custom-link"
+                style="font-weight: 400; opacity: 0.8;">Terms</a></p>
+    </footer>
+
+</body>
+
+</html>

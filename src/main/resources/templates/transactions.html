@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Transaction History - GoldKitty Bank</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-primary: #D4AF37;
+            --dark-bg: #0f0f0f;
+            --glass-white: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success-green: #2ecc71;
+            --error-red: #e74c3c;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            color: #ffffff;
+            margin: 0;
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        .navbar-custom {
+            background-color: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--gold-primary) !important;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--gold-primary) !important;
+        }
+
+        .container {
+            max-width: 1100px;
+        }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        /* Ledger Table Container */
+        .table-custom-wrapper {
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        .table {
+            color: #ffffff;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            border-top: none;
+            border-bottom: 1px solid var(--glass-border);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            color: var(--gold-primary);
+            padding: 20px;
+        }
+
+        .table td {
+            padding: 20px;
+            vertical-align: middle;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            font-weight: 400;
+        }
+
+        .transaction-id {
+            font-family: monospace;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .type-badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .text-success {
+            color: var(--success-green) !important;
+        }
+
+        .text-danger {
+            color: var(--error-red) !important;
+        }
+
+        .custom-link {
+            color: var(--gold-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .custom-link:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.3);
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/landing">GoldKitty Bank</a>
+            <div class="ml-auto">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/transactions">Transactions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Ledger <span style="font-weight: 300; opacity: 0.5;">History</span></h2>
+            <a href="/dashboard" class="custom-link">
+                <i class="fas fa-chevron-left mr-2"></i> Return to Dashboard
+            </a>
+        </div>
+
+        <div class="table-custom-wrapper">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ref ID</th>
+                            <th>Transaction Type</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Processed Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="transaction : ${transactions}">
+                            <td class="transaction-id" th:text="'#' + ${transaction.id}"></td>
+                            <td>
+                                <span class="type-badge" th:text="${transaction.type}"></span>
+                            </td>
+                            <td>
+                                <span class="text-muted" style="font-size: 0.8rem;"><i
+                                        class="fas fa-check-circle text-success mr-1"></i> Completed</span>
+                            </td>
+                            <td class="amount-cell"
+                                th:classappend="${transaction.type.contains('Transfer In') || transaction.type == 'Deposit'} ? 'text-success' : 'text-danger'">
+                                <span
+                                    th:text="${transaction.type.contains('Transfer In') || transaction.type == 'Deposit'} ? '+$' + ${transaction.amount} : '-$' + ${transaction.amount}"></span>
+                            </td>
+                            <td style="color: rgba(255,255,255,0.6);" th:text="${transaction.timestamp}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(transactions)}">
+                            <td colspan="5" class="text-center empty-state">No transaction activity recorded yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

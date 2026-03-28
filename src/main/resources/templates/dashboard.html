@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Dashboard - GoldKitty Bank</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-surface: #121212;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1a1a1a, #000000);
+            color: #e0e0e0;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 80px;
+        }
+
+        /* Navbar Refinement */
+        .navbar-custom {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--gold) !important;
+        }
+
+        /* Balance Hero Section */
+        .balance-hero {
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .balance-hero h2 {
+            font-weight: 300;
+            color: #aaa;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .balance-amount {
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 10px 0;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--gold);
+        }
+
+        /* Button Styling */
+        .btn-action {
+            background: #000;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-action:hover {
+            background: var(--gold);
+            color: #000;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-submit {
+            background: var(--gold);
+            color: #000;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .btn-submit:hover {
+            background: #f1c40f;
+            transform: translateY(-2px);
+        }
+
+        /* Form Styling */
+        .form-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--gold);
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .error-msg {
+            background: rgba(255, 76, 76, 0.1);
+            color: #ff4c4c;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 76, 76, 0.2);
+        }
+
+        /* Label styling */
+        label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/landing">GoldKitty</a>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/transactions">Transactions</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="balance-hero">
+            <h2 th:text="'Welcome, ' + ${account.username}"></h2>
+            <div class="balance-amount" th:text="'$' + ${account.balance}">$0.00</div>
+            <div th:if="${error != null}" class="error-msg d-inline-block mt-2" th:text="${error}"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="glass-card h-100">
+                    <h5 class="mb-4" style="color: var(--gold)">Account Details</h5>
+                    <div class="mb-3">
+                        <label>Account Number</label>
+                        <p class="h5" th:text="${account.id}"></p>
+                    </div>
+                    <div>
+                        <label>Account Type</label>
+                        <p class="h5">Gold Savings</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-block btn-action" data-toggle="collapse" data-target="#depositForm">
+                            Deposit
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-block btn-action" data-target="#withdrawForm" data-toggle="collapse">
+                            Withdraw
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-block btn-action" data-target="#transferForm" data-toggle="collapse">
+                            Transfer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="collapse mt-2" id="depositForm" data-parent=".col-lg-8">
+                    <div class="glass-card">
+                        <form method="post" action="/deposit">
+                            <label>Deposit Amount</label>
+                            <input type="number" class="form-control mb-3" name="amount" placeholder="0.00" required />
+                            <button type="submit" class="btn btn-block btn-submit">Confirm Deposit</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="collapse mt-2" id="withdrawForm" data-parent=".col-lg-8">
+                    <div class="glass-card">
+                        <form method="post" action="/withdraw">
+                            <label>Withdrawal Amount</label>
+                            <input type="number" class="form-control mb-3" name="amount" placeholder="0.00" required />
+                            <button type="submit" class="btn btn-block btn-submit">Confirm Withdrawal</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="collapse mt-2" id="transferForm" data-parent=".col-lg-8">
+                    <div class="glass-card">
+                        <form method="post" action="/transfer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Recipient Username</label>
+                                    <input type="text" class="form-control mb-3" name="toUsername" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Amount</label>
+                                    <input type="number" class="form-control mb-3" name="amount" required />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-block btn-submit">Send Transfer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
